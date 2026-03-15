@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Astrid Live Viewer — with Loader</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    height: 100vh;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background: #f6f6f6;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* Drawer */
+  #drawer {
+    position: fixed;
+    left: -300px;
+    top: 0;
+    width: 260px;
+    height: 100vh;
+    background: white;
+    padding: 20px;
+    transition: left .35s ease;
+    border-right: 2px solid rgba(0,170,255,.12);
+    z-index: 30;
+    color: black;
+    box-shadow: 0 8px 206px rgba(0, 0, 0, 0.316);
+  }
+  #drawer h3 { color:#143d37; margin-top:40px; text-align:center; }
+  #drawer p { color:#000000; font-size:14px; text-align:center; }
+
+  .menu-btn {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 50;
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    border: none;
+    background: #f6f6f6;
+    font-size: 30px;
+    cursor: pointer;
+  }
+  .menu-btn:active{ transform: scale(.98); }
+
+  /* Main card */
+  .container {
+    width: min(92vw,460px);
+    background: rgba(255, 255, 255, 0.96);
+    border-radius: 16px;
+    padding: 20px;
+    color: #000;
+    border: 1px solid rgba(70,100,255,0.15);
+    box-shadow: 0 8px 36px rgba(0, 0, 0, 0.316);
+    z-index: 10;
+  }
+  h2 { text-align:center; margin: 0 0 12px; font-weight:600; }
+  input {
+    width:100%;
+    padding:12px;
+    font-size:16px;
+    border-radius:10px;
+    border:1px solid rgba(120,140,255,0.2);
+    margin-top:10px;
+    background:#fff;
+    color:#000;
+    outline:none;
+  }
+  input:focus { box-shadow:0 0 0 4px rgba(120,80,255,0.06); border-color: #8b5cf6; }
+
+  .row { display:flex; gap:12px; margin-top:12px; }
+  .small { flex:1 1 140px; }
+  button.primary {
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:none;
+    background: linear-gradient(180deg,#00ff66,#00d651);
+    color:#00204d;
+    font-weight:700;
+    font-size:16px;
+    cursor:pointer;
+  }
+  button.primary:active{ transform:scale(.99); }
+
+  footer { margin-top:14px; text-align:center; opacity:.8; font-style:italic; }
+
+  /* Loader overlay */
+  #loaderOverlay {
+    position: fixed;
+    inset: 0;
+    display: none;           /* shown by JS */
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, rgba(5,5,10,0.85), rgba(2,2,6,0.9));
+    z-index: 100;
+    flex-direction: column;
+    gap: 18px;
+    padding: 24px;
+    text-align: center;
+  }
+  .spinner {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    border: 8px solid rgba(255,255,255,0.08);
+    border-top-color: #9b7cff;
+    animation: spin 1s linear infinite;
+    box-shadow: 0 6px 30px rgba(155,124,255,0.12);
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loader-text { font-size:16px; color:#f0f0ff; }
+
+  .loader-actions { display:flex; gap:12px; margin-top:6px; }
+  .btn-ghost {
+    padding:10px 14px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.08);
+    background: transparent;
+    color:#fff;
+    cursor:pointer;
+  }
+  .btn-danger {
+    background: linear-gradient(180deg,#ff7a7a,#ff5a5a);
+    border:none;
+    color:#190000;
+    font-weight:700;
+  }
+
+  /* Small responsive tweaks */
+  @media (max-width:420px){
+    .container{ padding:16px; border-radius:12px; }
+    .menu-btn{ width:50px; height:50px; left:8px; top:8px; font-size:26px; }
+  }
+  footer {position: absolute;bottom: 20px;color: #000;}
+</style>
+</head>
+<body>
+
+<button class="menu-btn" id="men" onclick="toggleDrawer()">≡</button>
+
+<div id="drawer">
+  <h3>⚙️ Top IP adress</h3>
+  <p>Last IP: <span id="lastIpText">—</span></p>
+  <p style="margin-top:18px; font-size:13px; color:#000000">Astrid Live Viewer<br>Version 1.1</p>
+</div>
+
+<div class="container" role="main" aria-labelledby="title">
+  <div id="OffMode">
+    <button style="float: right;border:0;" id="ChangeMode">Change mode</button>
+    <h2 id="title">🌐 Live Web Tester</h2>
+
+    <input id="ip" placeholder="IP address — Ex: 192.168.43.247" inputmode="numeric" />
+    <input id="port" placeholder="Port" inputmode="numeric"/>
+    <input id="file" placeholder="File name — Ex: index.html (default if empty)" />
+
+    <div class="row">
+      <div class="small">
+        <button class="primary" onclick="go()">🚀 Launch</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="ModeOnline" style="display: none;">
+    <button style="float: right;border:0;" onclick="modeOff()">Simple mode</button>
+    <h2>🌐 Simple mode</h2>
+    <input type="text" id="lien" placeholder="Coller ici le lien." required>
+    <div class="row">
+      <div class="small">
+        <button class="primary" onclick="goOff()">🚀 Launch</button>
+      </div>
+  </div>
+  </div>
+
+  
+</div>
+<footer>by <strong style="color:orangered">Astrid</strong> — Team</footer>
+
+<!-- Loader overlay -->
+<div id="loaderOverlay" role="status" aria-live="polite">
+  <div class="spinner" aria-hidden="true"></div>
+  <div class="loader-text" id="loaderMessage">Checking server availability…</div>
+  <div class="loader-actions" id="loaderActions" style="display:none;">
+    <button class="btn-ghost" onclick="closeLoader()">Close</button>
+    <button class="btn-danger" onclick="openAnyway()">Open anyway</button>
+  </div>
+</div>
+
+<script>
+/* --- Persistence --- */
+window.addEventListener('load', () => {
+  const lastIP = localStorage.getItem('lastIP') || '';
+  const lastPort = localStorage.getItem('lastPort') || '';
+  const lastFile = localStorage.getItem('lastFile') || '';
+  if (lastIP) document.getElementById('ip').value = lastIP;
+  if (lastPort) document.getElementById('port').value = lastPort;
+  if (lastFile) document.getElementById('file').value = lastFile;
+  document.getElementById('lastIpText').textContent = lastIP || '—';
+});
+const men = document.getElementById('men');
+/* --- Drawer --- */
+let drawerOpen = false;
+function toggleDrawer() {
+  const d = document.getElementById('drawer');
+  drawerOpen = !drawerOpen;
+  d.style.left = drawerOpen ? '0px' : '-260px';
+}
+
+/* --- Loader helpers --- */
+const overlay = document.getElementById('loaderOverlay');
+const loaderMsg = document.getElementById('loaderMessage');
+const loaderActions = document.getElementById('loaderActions');
+let pendingUrl = '';
+
+function showLoader(msg = 'Checking server availability…') {
+  loaderMsg.textContent = msg;
+  loaderActions.style.display = 'none';
+  overlay.style.display = 'flex';
+}
+
+function showLoaderError(msg = 'Server not reachable') {
+  loaderMsg.textContent = msg;
+  loaderActions.style.display = 'flex';
+  overlay.style.display = 'flex';
+}
+
+function closeLoader() {
+  overlay.style.display = 'none';
+  pendingUrl = '';
+}
+
+/* --- Open anyway if user wants --- */
+function openAnyway() {
+  if (!pendingUrl) return closeLoader();
+  // Force open — simply navigate
+  window.location.href = pendingUrl;
+}
+
+document.getElementById('ChangeMode').onclick = () => {
+    document.getElementById('OffMode').style.display = 'none';
+    document.getElementById('ModeOnline').style.display = 'block';
+}
+const lien = document.getElementById('lien');
+
+function modeOff() {
+    document.getElementById('OffMode').style.display = 'block';
+    document.getElementById('ModeOnline').style.display = 'none';
+}
+
+function goOff() {
+  if (lien.value) {
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+  loaderMsg.textContent = 'Server found — launching…';
+  setTimeout(() => { window.location.href = lien.value; }, 2500);
+  } else {
+    alert('Coller le lien ici')
+  }
+}
+
+/* --- Main go() with a short fetch check --- */
+async function go() {
+  const ip = document.getElementById('ip').value.trim();
+  const port = document.getElementById('port').value.trim() || "";
+  const file = (document.getElementById('file').value.trim() || 'index.html');
+
+  const ipRegex = /^(?:\d{1,3}\.){3}\d{1,3}$/;
+  if (!ipRegex.test(ip)) {
+    alert('⚠️ Invalid IP address format.');
+    return;
+  }
+
+  const urlOffline = `http://${ip}${port ? ':' + port : ''}/${file}`;
+
+  // Save to localStorage
+  localStorage.setItem('lastIP', ip);
+  localStorage.setItem('lastPort', port);
+  localStorage.setItem('lastFile', file);
+  document.getElementById('lastIpText').textContent = ip;
+
+  // Show loader
+  showLoader('Checking server availability…');
+
+  // Try a quick fetch with timeout.
+  // Use mode: 'no-cors' to make the request more likely to succeed even if server lacks CORS,
+  // note: response will be opaque in that case but resolution tells that network path worked.
+  const controller = new AbortController();
+  const timeoutMs = 2500;
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+
+  try {
+    // We attempt an OPTIONS first (some servers block), but fetch with no-cors is more permissive.
+    // If this resolves, we assume server is reachable and proceed to open.
+    await fetch(urlOffline, { method: 'GET', mode: 'no-cors', cache: 'no-store', signal: controller.signal });
+    clearTimeout(timer);
+
+    // Small UX pause so user sees loader
+    loaderMsg.textContent = 'Server found — launching…';
+    setTimeout(() => { window.location.href = urlOffline; }, 2500);
+
+  } catch (err) {
+    clearTimeout(timer);
+    // Network error or timeout — show error and give the choice to open anyway
+    console.warn('fetch error:', err);
+    pendingUrl = urlOffline;
+    showLoaderError('❌ Server did not respond within 2.5s.\nYou can try to open anyway or check your IP/port.');
+  }
+}
+</script>
+</body>
+</html>
