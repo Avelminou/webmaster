@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cours HTML</title>
+
+    <!-- Prism style -->
+
+    <link href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism-tomorrow.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xonokai.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui;
+        }
+
+        body {
+            background: #f6f6f6;
+            color: #000000;
+        }
+
+
+        /* CONTAINER */
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 0px;
+        }
+
+        /* CARD */
+
+        .card {
+            background: #f6f6f6;
+            padding: 10px;
+            border-radius: 20px;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        /* CODE */
+
+        .code-container {
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #a1a1a16b;
+            border: none;
+            color: white;
+            font-family: cursive;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .copy-btn:hover {
+            background: #005bb5;
+        }
+
+        pre {
+            border-radius: 12px;
+        }
+        b {
+            color: #0400ff;
+        }
+        strong {
+            color: rgb(180, 12, 186);
+            
+        }
+        .card h1 {
+            text-decoration: underline;
+        }
+        li {
+            margin-top: 10px;
+        }
+        .aff {
+            display: flex;
+            flex-direction: column;
+            align-items: center;justify-content: center;
+        }
+        .res{
+            background-color: rgb(255, 255, 255);
+            padding: 20px;
+            width: 75vw;
+            box-shadow: 0 5px 25px 10px rgba(0, 0, 0, 0.187);
+            border-radius: 20px;
+        }
+        .res input {
+            width: 100px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="card">
+
+            <h1>Introduction à HTML</h1><br>
+            <p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>HTML</b> signifie <strong> HyperText Markup Language</strong>.
+            C’est le langage utilisé pour créer la structure des pages web.</p><br>
+            <p>Un fichier HTML se termine par <b>".html"</b></p><br><hr><br>
+            <h3>Exemple simple</h3>
+
+            <div class="code-container">
+
+                <button class="copy-btn">Copier</button>
+
+                <pre class="line-numbers"><code class="language-html">
+
+&lt;!DOCTYPE html&gt;
+&lt;html lang="fr"&gt;
+
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Mon site&lt;/title&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+
+    &lt;h1&gt;Bonjour étudiants&lt;/h1&gt;
+    &lt;p&gt;Apprendre HTML est facile.&lt;/p&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+
+                </code></pre>
+
+            </div>
+            <br><hr><br>
+
+            <h3 style="text-decoration: underline;">Explication</h3>
+            <br>
+            <ul style="padding-left: 40px;">
+                <li><strong>&lt;!DOCTYPE html&gt;</strong> → indique que c'est du HTML5</li>
+                <li><b>&lt;html&gt;</b> → racine du document</li>
+                <li><strong>&lt;head&gt;</strong> → informations de la page</li>
+                <li><b>&lt;body&gt;</b> → contenu visible</li>
+                <li><strong>&lt;h1&gt;</strong> → Un grand titre</li>
+                <li><b>&lt;p&gt;</b> → paragraphe</li>
+            </ul><br><hr><br>
+            <h3>Les titres</h3><br>
+
+            <b>HTML</b> possède 6 niveaux de titres.
+            <pre class="line-numbers"><code class="language-html">
+&lt;h1&gt;Titre principal&lt;/h1&gt;
+&lt;h2&gt;Sous titre&lt;/h2&gt;
+&lt;h3&gt;Sous section&lt;/h3&gt;
+&lt;h4&gt;Titre petit&lt;/h4&gt;
+&lt;h5&gt;Titre petit&lt;/h5&gt;
+&lt;h6&gt;Titre petit&lt;/h6&gt;
+            </code></pre>
+            <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;h1</strong> est leplus grand. <br>
+            <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;h6</strong> est leplus petit.
+            <br><br><hr><br>
+
+            <h3>Les paragraphes</h3><br>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pour écrire du texte :</span><br>
+            <pre class="line-numbers"><code class="language-html">
+&lt;p&gt;Ceci est un paragraphe.&lt;/p&gt;
+&lt;p&gt;Un autre paragraphe.&lt;/p&gt;
+            </code></pre><br>
+            <h4>Saut de ligne</h4><br>
+            <pre class="line-numbers"><code class="language-html">
+&lt;br&gt;
+            </code></pre><br>
+            <h4>Ligne horizontale</h4><br>
+            <pre class="line-numbers"><code class="language-html">
+&lt;hr&gt;
+            </code></pre><br>
+            <h3>Eemple:</h3>
+            <pre class="line-numbers"><code class="language-html">
+&lt;p&gt;Bonjour!&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Je suis un paragraphe.&lt;/p&gt;
+&lt;br&gt;
+&lt;p&gt;Au revoir!&lt;/p&gt;
+            </code></pre><br>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Affichage :</span><br><br>
+            <div class="aff">
+                <div class="res">
+                    <p>Bonjour!</p>
+                    <hr>
+                    <p>Je suis un paragraphe.</p>
+                    <br>
+                    <p>Au revoir!</p>
+                </div>
+            </div>
+            <br><hr><br>
+            <h3>Texte important</h3><br>
+            <pre class="line-numbers"><code class="language-html">
+&lt;b&gt;texte en gras&lt;/b&gt;
+
+&lt;strong&gt;texte important&lt;/strong&gt;
+
+&lt;i&gt;texte en italique&lt;/i&gt;
+
+&lt;em&gt;texte en italique important&lt;/em&gt;
+
+&lt;mark&gt;texte a fond jaune&lt;/mark&gt;
+
+&lt;u&gt;texte surligné&lt;/u&gt;
+            </code></pre><br>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Affichage :</span><br><br>
+            <div class="aff">
+                <div class="res">
+                    <b>texte en gras</b><br>
+                    <strong>texte important</strong><br>
+                    <i>texte en italique</i><br>
+                    <em>texte en italique important</em><br>
+                    <mark>texte a fond jaune</mark><br>
+                    <u>texte surligné</u>
+                </div>
+            </div><br><hr><br>
+            <h3>Les lines</h3><br>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pour créer un lien :</span><br>
+            <pre class="line-numbers"><code class="language-html">
+&lt;a href="https://google.com">Aller sur Google&lt;/a&gt;
+            </code></pre><br><br>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ouvrir dans un nouvel onglet :</span><br>
+            <pre class="line-numbers"><code class="language-html">
+&lt;a href="https://google.com" target="_blank">Google&lt;/a&gt;
+            </code></pre><br><hr><br>
+            <h3>Les images</h3><br>
+            <pre class="line-numbers"><code class="language-html">
+&lt;img src="image.jpg" alt="Description de l'image"&gt;
+            </code></pre><br>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Changer la taille :</span><br>
+            <pre class="line-numbers"><code class="language-html">
+&lt;img src="image.jpg" width="300"&gt;
+            </code></pre><br>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Affichage :</span><br><br>
+            <div class="aff">
+                <div class="res">
+                    <img src="./default.jpg" width="80" alt="">
+                </div>
+            </div>
+            <br><hr><br>
+            <h3>Les listes</h3><br>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Liste non ordonnée</span><br>
+            <pre class="line-numbers"><code class="language-html">
+&lt;ul&gt;
+    &lt;li&gt;Pomme&lt;/li&gt;
+    &lt;li&gt;Banane&lt;/li&gt;
+    &lt;li&gt;Orange&lt;/li&gt;
+&lt;/ul&gt;
+            </code></pre><br>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Liste ordonnée</span><br>
+            <pre class="line-numbers"><code class="language-html">
+&lt;ol&gt;
+    &lt;li&gt;Étape 1&lt;/li&gt;
+    &lt;li&gt;Étape 2&lt;/li&gt;
+    &lt;li&gt;Étape 3&lt;/li&gt;
+&lt;/ol&gt;
+            </code></pre><br><hr><br>
+            <h3>Les Tableaux</h3><br>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Structure d'un tableau</span><br>
+            <pre class="line-numbers"><code class="language-html">
+&lt;table border="1"&gt;
+    &lt;tr&gt;
+        &lt;th&gt;Nom&lt;/th&gt;
+        &lt;th&gt;Age&lt;/th&gt;
+    &lt;/tr&gt;
+
+    &lt;tr&gt;
+        &lt;td&gt;Jean&lt;/td&gt;
+        &lt;td&gt;20&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr&gt;
+        &lt;td&gt;Marie&lt;/td&gt;
+        &lt;td&gt;22&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+            </code></pre><br>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Affichage :</span><br><br>
+            <div class="aff">
+                <div class="res">
+                    <table border="1">
+                        <tr>
+                        <th>Nom</th>
+                        <th>Age</th>
+                        </tr>
+
+                        <tr>
+                        <td>Jean</td>
+                        <td>20</td>
+                        </tr>
+
+                        <tr>
+                        <td>Marie</td>
+                        <td>22</td>
+                        </tr>
+                    </table>
+                </div>
+            </div><br><hr><br>
+
+            <h3>Les Formulaires</h3><br>
+            <pre class="line-numbers"><code class="language-html">
+&lt;form&gt;
+
+    &lt;label&gt;Nom&lt;/label&gt;
+    &lt;input type="text"&gt;
+
+    &lt;label&gt;Téléphone&lt;/label&gt;
+    &lt;input type="tel"&gt;
+
+    &lt;label&gt;Adresse&lt;/label&gt;
+    &lt;input type="text"&gt;
+
+    &lt;button&gt;Envoyer&lt;/button&gt;
+
+&lt;/form&gt;
+            </code></pre><br>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Affichage :</span><br><br>
+            <div class="aff">
+                <div class="res">
+                    
+
+                        <label>Nom</label>
+                        <input type="text"><br>
+
+                        <label>Téléphone</label>
+                        <input type="tel"><br>
+
+                        <label>Adresse</label>
+                        <input type="text"><br>
+
+                        <button>Envoyer</button>
+
+                    
+                </div></div><br><hr><br>
+            <h3>Les Attributs HTML</h3><br>
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Un attribut donne une information à une balise.
+                </span><br><br>
+            <h4>Exemple:</h4><br>
+            <pre class="line-numbers"><code class="language-html">
+&lt;div class="ma-page-gauche"&gt;&lt;/div&gt;
+            </code></pre><br>
+            <b>class</b> est un attribut. <br><br>
+            <span>Autres attributs :</span>
+            <ul style="margin-left: 50px;">
+                <li>id</li>
+                <li>href</li>
+                <li>style</li>
+                <li>src</li>
+                <li>alt</li>
+            </ul><br><hr><br>
+            <pre class="line-numbers"><code class="language-html">
+&lt;div&gt;
+    &lt;h1&gt;Titre&lt;/h1&gt;
+    &lt;p&gt;Contenu&lt;/p&gt;
+&lt;/div&gt;
+            </code></pre><br>
+            <b>div</b> sert à organiser la page. <br> <br><hr><br>
+            <h3>Structure moderne HTML5</h3><br>
+            <pre class="line-numbers"><code class="language-html">
+&lt;header&gt;&lt;/header&gt;
+
+&lt;nav&gt;&lt;/nav&gt;
+
+&lt;section&gt;&lt;/section&gt;
+
+&lt;article&gt;&lt;/article&gt;
+
+&lt;footer&gt;&lt;/footer&gt;
+            </code></pre><br>
+            <span>Ces balises aident à <b>structurer un site moderne.</b></span>
+            
+        </div>
+
+    </div>
+
+    <!-- Prism JS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/prism.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/line-numbers/prism-line-numbers.js"></script>
+
+    <script>
+
+        document.querySelector(".copy-btn").addEventListener("click", function () {
+
+            let code = document.querySelector("code").innerText;
+
+            navigator.clipboard.writeText(code);
+
+            this.innerText = "Copié !";
+
+            setTimeout(() => {
+                this.innerText = "Copier";
+            }, 2000);
+
+        });
+
+    </script>
+
+</body>
+
+</html>
