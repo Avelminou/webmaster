@@ -6,6 +6,8 @@ let btnQ = document.getElementById("btnQ");
 const pro = document.getElementById('pro');
 const nbL = document.getElementById('nbL');
 
+let rngColor = document.getElementById('rngColor');
+
 const bouton = [btnT, btnQ]
 
 bouton.forEach(function (coloBtn, i) {
@@ -46,10 +48,7 @@ const container = document.getElementById("histo");
 
 const lessons = [
     "Balises de base",
-    "Les titres HTML",
-    "Les paragraphes",
-    "Les liens",
-    "Les images"
+    "Images et médias",
 ];
 
 lessons.forEach((title, i) => {
@@ -95,3 +94,5 @@ lessons.forEach((title, i) => {
 const chifre = document.querySelectorAll('.recent').length;
 
 nbL.innerText = chifre;
+
+rngColor.style.width = `${(220 * chifre) / 100}px`;
