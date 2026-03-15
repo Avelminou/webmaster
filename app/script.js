@@ -8,6 +8,8 @@ const nbL = document.getElementById('nbL');
 
 let rngColor = document.getElementById('rngColor');
 
+document.getElementById('pdp').src = 'https://avelminou.github.io/webmaster/app/image/default.jpg';
+
 const bouton = [btnT, btnQ]
 
 bouton.forEach(function (coloBtn, i) {
