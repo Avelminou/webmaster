@@ -11,7 +11,7 @@ const container = document.getElementById("histo");
 let title = document.title || "Historique";
 
 document.getElementById("pdp").src =
-"https://avelminou.github.io/webmaster/app/image/default.jpg";
+    "https://avelminou.github.io/webmaster/app/image/default.jpg";
 
 
 
@@ -26,25 +26,25 @@ bouton.forEach((btn, i) => {
         btnU.style.background = "white";
 
         const url =
-        `https://avelminou.github.io/webmaster/app/outils/app${i}.html`;
+            `https://avelminou.github.io/webmaster/app/outils/app${i}.html`;
 
         pro.innerHTML = "Chargement...";
 
         fetch(url)
-        .then(() => {
+            .then(() => {
 
-            pro.innerHTML = `
+                pro.innerHTML = `
             <iframe src="${url}" frameborder="0"></iframe>
             `;
 
-        })
-        .catch(() => {
+            })
+            .catch(() => {
 
-            pro.innerHTML = `
+                pro.innerHTML = `
             <iframe src="./app/all.html" frameborder="0"></iframe>
             `;
 
-        });
+            });
 
     };
 
@@ -93,7 +93,7 @@ async function chargerPDF() {
     try {
 
         const res = await fetch(
-        "https://api.github.com/repos/avelminou/webmaster/contents/app/pdf"
+            "https://api.github.com/repos/avelminou/webmaster/contents/app/pdf"
         );
 
         const data = await res.json();
@@ -187,7 +187,7 @@ document.body.innerHTML = txt;
 `;
 
         pro.innerHTML =
-        `<iframe
+            `<iframe
         style="width:100%;height:100%;border:0"
         srcdoc="${html.replace(/"/g, "&quot;")}">
         </iframe>`;
@@ -197,10 +197,10 @@ document.body.innerHTML = txt;
     catch {
 
         pro.innerHTML =
-        `<iframe src="./app/all.html" frameborder="0"></iframe>`;
+            `<iframe src="./app/all.html" frameborder="0"></iframe>`;
 
     }
 
 }
 
-chargerPDF();
+await chargerPDF();
