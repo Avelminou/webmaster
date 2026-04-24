@@ -33,16 +33,14 @@ bouton.forEach((btn, i) => {
         fetch(url)
             .then(() => {
 
-                pro.innerHTML = `
-            <iframe src="${url}" frameborder="0"></iframe>
-            `;
+                pro.innerHTML =
+                    `<iframe src="${url}" frameborder="0"></iframe>`;
 
             })
             .catch(() => {
 
-                pro.innerHTML = `
-            <iframe src="./app/all.html" frameborder="0"></iframe>
-            `;
+                pro.innerHTML =
+                    `<iframe src="./app/all.html" frameborder="0"></iframe>`;
 
             });
 
@@ -66,12 +64,8 @@ btnD.onclick = () => {
 
 // ------------------ historique ------------------
 
-
-const chiffre = document.querySelectorAll(".recent").length;
-
-nbL.innerText = chiffre;
-
-rngColor.style.width = `${(220 * chiffre) / 100}px`;
+nbL.innerText = "0";
+rngColor.style.width = "0px";
 
 
 
@@ -124,9 +118,13 @@ color:#333;
 <h2>📚 Mes dossiers</h2>
 `;
 
+        let total = 0;
+
         data.forEach(f => {
 
             if (f.type === "dir") {
+
+                total++;
 
                 html += `
 <div class="box" onclick="ouvrirDossier('${f.name}')">
@@ -159,7 +157,10 @@ files.forEach(function(f){
 if(f.name.endsWith('.pdf')){
 
 txt +=
-'<div class="box" onclick="window.location.href=\\\\'https://docs.google.com/gview?embedded=1&url=' + f.download_url + '\\\\'">' +
+'<div class="box" onclick="window.location.href=\\\\' +
+'https://docs.google.com/gview?embedded=1&url=' +
+f.download_url +
+'\\\\'">' +
 '📄 ' + f.name +
 '</div>';
 
@@ -178,10 +179,11 @@ document.body.innerHTML = txt;
 `;
 
         container.innerHTML =
-            `<iframe
-        style="width:100%;height:100%;border:0"
-        srcdoc="${html.replace(/"/g, "&quot;")}">
-        </iframe>`;
+            `<iframe style="width:100%;height:100%;border:0"
+        srcdoc="${html.replace(/"/g, "&quot;")}"></iframe>`;
+
+        nbL.innerText = total;
+        rngColor.style.width = `${total * 20}px`;
 
     }
 
