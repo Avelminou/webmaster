@@ -71,28 +71,7 @@ rngColor.style.width = "0px";
 
 // ------------------ chargement dossiers PDF ------------------
 
-function log(msg) {
 
-    let box = document.createElement("div");
-
-    box.style.position = "fixed";
-    box.style.bottom = "0";
-    box.style.left = "0";
-    box.style.right = "0";
-    box.style.maxHeight = "150px";
-    box.style.overflow = "auto";
-    box.style.background = "black";
-    box.style.color = "lime";
-    box.style.fontSize = "12px";
-    box.style.zIndex = "99999";
-    box.style.padding = "5px";
-
-    box.innerText = typeof msg === "object"
-        ? JSON.stringify(msg, null, 2)
-        : msg;
-
-    document.body.appendChild(box);
-}
 
 
 async function chargerPDF() {
