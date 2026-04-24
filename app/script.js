@@ -48,34 +48,26 @@ const container = document.getElementById("histo");
 
 document.getElementById('pdp').src = 'https://avelminou.github.io/webmaster/app/image/default.jpg';
 
-const lessons = [
-    "Balises de base",
-    "Images et médias",
-];
 
-lessons.forEach((title, i) => {
+const recent = document.createElement("div");
+recent.className = "recent";
 
-    const recent = document.createElement("div");
-    recent.className = "recent";
-
-    recent.innerHTML = `
+recent.innerHTML = `
 <img src="./app/image/icons8-historique-100.png" width="30">
 <b>&nbsp;&nbsp;${title}</b>
 `;
 
-recent.onclick = async () => {
+pro.innerHTML = "Chargement...";
 
-    pro.innerHTML = "Chargement...";
+try {
 
-    try {
-
-        const res = await fetch(
+    const res = await fetch(
         "https://api.github.com/repos/avelminou/webmaster/contents/app/pdf"
-        );
+    );
 
-        const data = await res.json();
+    const data = await res.json();
 
-        let html = `
+    let html = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -102,21 +94,21 @@ box-shadow:0 3px 8px rgba(0,0,0,.1);
 <h2>📚 Mes dossiers</h2>
 `;
 
-        data.forEach(f => {
+    data.forEach(f => {
 
-            if (f.type == "dir") {
+        if (f.type == "dir") {
 
-                html += `
+            html += `
 <div class="box" onclick="ouvrirDossier('${f.name}')">
 📁 ${f.name}
 </div>
 `;
 
-            }
+        }
 
-        });
+    });
 
-html += `
+    html += `
 
 <script>
 
@@ -155,27 +147,25 @@ document.body.innerHTML = txt;
 </html>
 `;
 
-        pro.innerHTML =
+    pro.innerHTML =
         '<iframe style="width:100%;height:100%;border:0" srcdoc="' +
         html.replace(/"/g, '&quot;') +
         '"></iframe>';
 
-    } catch {
+} catch {
 
-        pro.innerHTML =
+    pro.innerHTML =
         '<iframe src="./app/all.html" frameborder="0"></iframe>';
 
-    }
+}
 
-};
+
 
 container.appendChild(recent);
 
-
-});
 
 const chifre = document.querySelectorAll('.recent').length;
 
 nbL.innerText = chifre;
 
-rngColor.style.width = `${ (220 * chifre) / 100 } px`;
+rngColor.style.width = `${(220 * chifre) / 100} px`;
