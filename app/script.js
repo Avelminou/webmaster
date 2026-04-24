@@ -140,32 +140,64 @@ async function openFolder(name) {
 
     container.innerHTML = "Chargement...";
 
-    const url =
-    "https://api.github.com/repos/avelminou/webmaster/contents/app/pdf/" + name;
+    try {
 
-    const res = await fetch(url);
-    const files = await res.json();
+        const url =
+        "https://api.github.com/repos/avelminou/webmaster/contents/app/pdf/" + name;
 
-    container.innerHTML = `<h3>📁 ${name}</h3>`;
+        const res = await fetch(url);
+        const files = await res.json();
 
-    files.forEach(file => {
+        container.innerHTML = `<h3>📁 ${name}</h3>`;
 
-        let n = file.name.toLowerCase();
+        if (!files || files.length === 0) {
 
-        if (n.endsWith(".pdf") || n.endsWith(".docx")) {
+            container.innerHTML += `
+                <p style="color:red">📭 Dossier vide</p>
+                <button onclick="chargerPDF()">⬅ Retour</button>
+            `;
 
-            let div = document.createElement("div");
-            div.className = "box";
-
-            div.innerText =
-                n.endsWith(".pdf") ? "📄 " : "📝 " + file.name;
-
-            div.onclick = () => openFile(file.download_url);
-
-            container.appendChild(div);
+            return;
         }
 
-    });
+        let found = false;
+
+        files.forEach(file => {
+
+            let n = file.name.toLowerCase();
+
+            if (n.endsWith(".pdf") || n.endsWith(".docx")) {
+
+                found = true;
+
+                let div = document.createElement("div");
+                div.className = "box";
+
+                div.innerText =
+                    n.endsWith(".pdf") ? "📄 " : "📝 " + file.name;
+
+                div.onclick = () => openFile(file.download_url);
+
+                container.appendChild(div);
+            }
+
+        });
+
+        if (!found) {
+
+            container.innerHTML += `
+                <p style="color:orange">⚠ Aucun PDF ou DOCX</p>
+            `;
+        }
+
+    } catch (e) {
+
+        log("ERROR OPEN FOLDER");
+        log(e);
+
+        container.innerHTML = "❌ Erreur dossier";
+
+    }
 }
 
 function openFile(url) {
@@ -181,4 +213,4 @@ function openFile(url) {
     `;
 }
 
-await chargerPDF();
+chargerPDF();
