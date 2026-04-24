@@ -138,66 +138,76 @@ async function openFolder(name) {
         container.innerHTML = `<h3>📁 ${name}</h3>`;
 
         if (!files || files.length === 0) {
-
             container.innerHTML += `
                 <p style="color:red">📭 Dossier vide</p>
                 <button onclick="chargerPDF()">⬅ Retour</button>
             `;
-
             return;
         }
 
-        let found = false;
-
         files.forEach(file => {
 
-            let n = file.name.toLowerCase();
+            // 🔥 afficher TOUS les fichiers
+            let div = document.createElement("div");
+            div.className = "box";
 
-            if (n.endsWith(".pdf") || n.endsWith(".docx")) {
+            let ext = file.name.split(".").pop().toLowerCase();
 
-                found = true;
+            div.innerText =
+                (ext === "pdf" ? "📄 " :
+                ext === "docx" ? "📝 " :
+                "📦 ") + file.name;
 
-                let div = document.createElement("div");
-                div.className = "box";
+            div.onclick = () => openFile(file);
 
-                div.innerText =
-                    n.endsWith(".pdf") ? "📄 " : "📝 " + file.name;
-
-                div.onclick = () => openFile(file.download_url);
-
-                container.appendChild(div);
-            }
-
+            container.appendChild(div);
         });
 
-        if (!found) {
-
-            container.innerHTML += `
-                <p style="color:orange">⚠ Aucun PDF ou DOCX</p>
-            `;
-        }
-
     } catch (e) {
-
-        log("ERROR OPEN FOLDER");
-        log(e);
-
+        console.log(e);
         container.innerHTML = "❌ Erreur dossier";
-
     }
 }
 
-function openFile(url) {
+function openFile(file) {
 
-    let viewer =
-    "https://docs.google.com/gview?embedded=1&url=" + url;
+    const ext = file.name.split(".").pop().toLowerCase();
 
-    pro.innerHTML = `
-        <iframe 
-        src="${viewer}" 
-        style="width:100%;height:100%;border:0">
-        </iframe>
-    `;
+    // 🔥 URL RAW (meilleure compatibilité)
+    let rawUrl = file.download_url;
+
+    // PDF => viewer HTML simple (fallback)
+    if (ext === "pdf") {
+
+        pro.innerHTML = `
+            <iframe 
+                src="${rawUrl}" 
+                style="width:100%;height:100%;border:none">
+            </iframe>
+        `;
+
+    }
+
+    // DOCX => téléchargement direct (Google viewer souvent cassé)
+    else if (ext === "docx") {
+
+        pro.innerHTML = `
+            <div style="padding:20px">
+                <p>📝 DOCX détecté</p>
+                <a href="${rawUrl}" target="_blank">📥 Télécharger / Ouvrir</a>
+            </div>
+        `;
+    }
+
+    else {
+
+        pro.innerHTML = `
+            <div style="padding:20px">
+                <p>📦 Fichier non supporté</p>
+                <a href="${rawUrl}" target="_blank">Ouvrir</a>
+            </div>
+        `;
+    }
 }
 
 chargerPDF();
