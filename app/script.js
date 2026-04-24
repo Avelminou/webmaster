@@ -73,38 +73,17 @@ rngColor.style.width = "0px";
 
 async function chargerPDF() {
 
-    container.innerHTML = "Chargement...";
+    container.innerHTML = "Test API...";
 
-    try {
+    const res = await fetch(
+        "https://api.github.com/repos/avelminou/webmaster/contents/app/pdf"
+    );
 
-        const baseURL =
-        "https://api.github.com/repos/avelminou/webmaster/contents/app/pdf";
+    const data = await res.json();
 
-        const res = await fetch(baseURL);
-        const folders = await res.json();
+    console.log(data);
 
-        container.innerHTML = "<h3>📚 Mes dossiers</h3>";
-
-        folders.forEach(folder => {
-
-            if (folder.type === "dir") {
-
-                const div = document.createElement("div");
-                div.className = "box";
-                div.innerHTML = "📁 " + folder.name;
-
-                div.onclick = () => openFolder(folder.name);
-
-                container.appendChild(div);
-            }
-
-        });
-
-    } catch (e) {
-
-        container.innerHTML = "❌ Erreur chargement";
-
-    }
+    container.innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
 }
 
 
