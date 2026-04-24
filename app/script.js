@@ -73,52 +73,60 @@ rngColor.style.width = "0px";
 
 async function chargerPDF() {
 
-    container.innerHTML = "Test API...";
-
-    const res = await fetch(
-        "https://api.github.com/repos/avelminou/webmaster/contents/app/pdf"
-    );
-
-    const data = await res.json();
-
-    console.log(data);
-
-    container.innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
-}
-
-
-
-async function openFolder(folderName) {
-
     container.innerHTML = "Chargement...";
 
     try {
 
-        const url =
-        "https://api.github.com/repos/avelminou/webmaster/contents/app/pdf/" + folderName;
+        const res = await fetch(
+            "https://api.github.com/repos/avelminou/webmaster/contents/app/pdf"
+        );
 
-        const res = await fetch(url);
-        const files = await res.json();
+        const data = await res.json();
 
-        container.innerHTML = `
-            <h3>📁 ${folderName}</h3>
-            <button onclick="chargerPDF()">⬅ Retour</button>
-            <br><br>
-        `;
+        container.innerHTML = "<h3>📚 Mes dossiers</h3>";
 
-        files.forEach(file => {
+        data.forEach(f => {
 
-            const name = file.name.toLowerCase();
-
-            // PDF + DOCX uniquement
-            if (name.endsWith(".pdf") || name.endsWith(".docx")) {
+            if (f.type === "dir") {
 
                 const div = document.createElement("div");
                 div.className = "box";
 
-                div.innerHTML = (name.endsWith(".pdf") ? "📄 " : "📝 ") + file.name;
+                div.innerHTML = `📁 ${f.name}`;
 
-                div.onclick = () => openFile(file.download_url);
+                div.onclick = async () => {
+
+                    container.innerHTML = "Chargement...";
+
+                    const rep = await fetch(
+                        "https://api.github.com/repos/avelminou/webmaster/contents/app/pdf/" + f.name
+                    );
+
+                    const files = await rep.json();
+
+                    container.innerHTML = `<h3>📁 ${f.name}</h3>`;
+
+                    files.forEach(file => {
+
+                        if (file.name.endsWith(".pdf")) {
+
+                            const d = document.createElement("div");
+                            d.className = "box";
+
+                            d.innerHTML = "📄 " + file.name;
+
+                            d.onclick = () => {
+                                window.location.href =
+                                "https://docs.google.com/gview?embedded=1&url=" +
+                                file.download_url;
+                            };
+
+                            container.appendChild(d);
+                        }
+
+                    });
+
+                };
 
                 container.appendChild(div);
             }
@@ -127,25 +135,9 @@ async function openFolder(folderName) {
 
     } catch (e) {
 
-        container.innerHTML = "❌ Erreur dossier";
+        container.innerHTML = "❌ Erreur de chargement";
 
     }
 }
-
-
-
-function openFile(url) {
-
-    const googleViewer =
-    "https://docs.google.com/gview?embedded=1&url=" + url;
-
-    pro.innerHTML = `
-        <iframe 
-            src="${googleViewer}" 
-            style="width:100%;height:100%;border:0">
-        </iframe>
-    `;
-}
-
 
 await chargerPDF();
