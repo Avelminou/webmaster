@@ -66,15 +66,6 @@ btnD.onclick = () => {
 
 // ------------------ historique ------------------
 
-const recent = document.createElement("div");
-recent.className = "recent";
-
-recent.innerHTML = `
-<img src="./app/image/icons8-historique-100.png" width="30">
-<b>&nbsp;&nbsp;${title}</b>
-`;
-
-container.appendChild(recent);
 
 const chiffre = document.querySelectorAll(".recent").length;
 
@@ -88,7 +79,7 @@ rngColor.style.width = `${(220 * chiffre) / 100}px`;
 
 async function chargerPDF() {
 
-    pro.innerHTML = "Chargement...";
+    container.innerHTML = "Chargement...";
 
     try {
 
@@ -186,7 +177,7 @@ document.body.innerHTML = txt;
 </html>
 `;
 
-        pro.innerHTML =
+        container.innerHTML =
             `<iframe
         style="width:100%;height:100%;border:0"
         srcdoc="${html.replace(/"/g, "&quot;")}">
@@ -196,7 +187,7 @@ document.body.innerHTML = txt;
 
     catch {
 
-        pro.innerHTML =
+        container.innerHTML =
             `<iframe src="./app/all.html" frameborder="0"></iframe>`;
 
     }
