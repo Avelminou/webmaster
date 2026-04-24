@@ -169,45 +169,111 @@ async function openFolder(name) {
     }
 }
 
+let pdfDoc = null;
+let pageNum = 1;
+let pageRendering = false;
+let pageNumPending = null;
+let scale = 1.2;
+
 function openFile(file) {
 
+    const url = file.download_url;
     const ext = file.name.split(".").pop().toLowerCase();
 
-    // 🔥 URL RAW (meilleure compatibilité)
-    let rawUrl = file.download_url;
-
-    // PDF => viewer HTML simple (fallback)
+    // 🔥 PDF Viewer page par page
     if (ext === "pdf") {
 
         pro.innerHTML = `
-            <iframe 
-                src="${rawUrl}" 
-                style="width:100%;height:100%;border:none">
-            </iframe>
-        `;
+            <div style="text-align:center">
+                <canvas id="pdf-canvas"></canvas>
 
-    }
-
-    // DOCX => téléchargement direct (Google viewer souvent cassé)
-    else if (ext === "docx") {
-
-        pro.innerHTML = `
-            <div style="padding:20px">
-                <p>📝 DOCX détecté</p>
-                <a href="${rawUrl}" target="_blank">📥 Télécharger / Ouvrir</a>
+                <div style="margin-top:10px">
+                    <button onclick="prevPage()">⬅</button>
+                    <span id="page-num"></span>
+                    <button onclick="nextPage()">➡</button>
+                </div>
             </div>
         `;
+
+        loadPDF(url);
     }
 
     else {
-
         pro.innerHTML = `
             <div style="padding:20px">
-                <p>📦 Fichier non supporté</p>
-                <a href="${rawUrl}" target="_blank">Ouvrir</a>
+                <a href="${url}" target="_blank">📥 Ouvrir / Télécharger</a>
             </div>
         `;
     }
-}
+            }
+
+
+function loadPDF(url) {
+
+    const canvas = document.getElementById("pdf-canvas");
+    const ctx = canvas.getContext("2d");
+
+    pdfjsLib.getDocument(url).promise.then(pdf => {
+
+        pdfDoc = pdf;
+        pageNum = 1;
+
+        renderPage(pageNum);
+    });
+
+    function renderPage(num) {
+
+        pageRendering = true;
+
+        pdfDoc.getPage(num).then(page => {
+
+            const viewport = page.getViewport({ scale: scale });
+
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            const renderContext = {
+                canvasContext: ctx,
+                viewport: viewport
+            };
+
+            const renderTask = page.render(renderContext);
+
+            renderTask.promise.then(() => {
+                pageRendering = false;
+
+                document.getElementById("page-num").textContent =
+                    `Page ${pageNum} / ${pdfDoc.numPages}`;
+
+                if (pageNumPending !== null) {
+                    renderPage(pageNumPending);
+                    pageNumPending = null;
+                }
+            });
+        });
+    }
+
+    function queueRenderPage(num) {
+        if (pageRendering) {
+            pageNumPending = num;
+        } else {
+            renderPage(num);
+        }
+    }
+
+    window.nextPage = function () {
+        if (pageNum >= pdfDoc.numPages) return;
+        pageNum++;
+        queueRenderPage(pageNum);
+    };
+
+    window.prevPage = function () {
+        if (pageNum <= 1) return;
+        pageNum--;
+        queueRenderPage(pageNum);
+    };
+                }
+
+
 
 chargerPDF();
