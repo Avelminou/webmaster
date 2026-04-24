@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bibliothèque PDF</title>
+
+<style>
+body{font-family:Arial;margin:0;background:#eef2f7}
+header{
+background:#1565c0;color:#fff;padding:18px;
+text-align:center;font-size:24px
+}
+
+#liste{padding:12px}
+
+.item{
+background:#fff;
+padding:15px;
+margin-bottom:10px;
+border-radius:12px;
+box-shadow:0 2px 6px rgba(0,0,0,.1);
+cursor:pointer;
+transition:.2s;
+}
+
+.item:hover{transform:scale(1.01)}
+
+.nom{font-weight:bold;color:#1565c0}
+
+.back{
+background:#444;color:#fff;
+padding:10px;margin-bottom:10px;
+border-radius:10px;
+cursor:pointer;
+display:inline-block;
+}
+</style>
+</head>
+
+<body>
+
+<header>📚 Bibliothèque PDF</header>
+<div id="liste">Chargement...</div>
+
+<script>
+
+const user = "avelminou";
+const repo = "webmaster";
+const basePath = "app/pdf/";
+
+let currentPath = basePath;
+
+// charger un dossier
+async function loadFolder(path){
+
+currentPath = path;
+
+const res = await fetch(
+`https://api.github.com/repos/${user}/${repo}/contents/${path}`
+);
+
+const data = await res.json();
+
+let liste = document.getElementById("liste");
+liste.innerHTML = "";
+
+// bouton retour
+if(path !== basePath){
+let back = document.createElement("div");
+back.className = "back";
+back.innerHTML = "⬅ Retour";
+back.onclick = () => loadFolder(basePath);
+liste.appendChild(back);
+}
+
+// tri dossiers puis fichiers
+data.sort((a,b)=> a.type === b.type ? 0 : (a.type === "dir" ? -1 : 1));
+
+data.forEach(item=>{
+
+let div = document.createElement("div");
+div.className = "item";
+
+if(item.type === "dir"){
+
+div.innerHTML = `<div class="nom">📁 ${item.name}</div>`;
+
+div.onclick = () => {
+loadFolder(item.path);
+};
+
+}else if(item.name.endsWith(".pdf")){
+
+div.innerHTML = `
+<div class="nom">📄 ${item.name}</div>
+<div>📖 Cliquer pour lire</div>
+`;
+
+div.onclick = () => {
+
+let url = "https://docs.google.com/gview?embedded=1&url="
++ encodeURIComponent(item.download_url);
+
+window.location.href = url;
+
+};
+
+}else{
+return;
+}
+
+liste.appendChild(div);
+
+});
+
+}
+
+// initial
+loadFolder(basePath);
+
+</script>
+
+</body>
+</html>
