@@ -8,9 +8,8 @@ const nbL = document.getElementById('nbL');
 
 let rngColor = document.getElementById('rngColor');
 
-document.getElementById('pdp').src = 'https://avelminou.github.io/webmaster/app/image/default.jpg';
-
 const bouton = [btnT, btnQ]
+
 
 bouton.forEach(function (coloBtn, i) {
 
@@ -47,6 +46,7 @@ btnD.onclick = () => {
 
 const container = document.getElementById("histo");
 
+document.getElementById('pdp').src = 'https://avelminou.github.io/webmaster/app/image/default.jpg';
 
 const lessons = [
     "Balises de base",
@@ -63,33 +63,114 @@ lessons.forEach((title, i) => {
 <b>&nbsp;&nbsp;${title}</b>
 `;
 
-    recent.onclick = async () => {
+recent.onclick = async () => {
 
-        const url = `https://avelminou.github.io/webmaster/app/off/lesson${i}.html`;
+    pro.innerHTML = "Chargement...";
 
-        pro.innerHTML = "Chargement...";
+    try {
 
-        try {
+        const res = await fetch(
+        "https://api.github.com/repos/avelminou/webmaster/contents/app/pdf"
+        );
 
-            const res = await fetch(url);
+        const data = await res.json();
 
-            if (!res.ok) throw new Error();
+        let html = `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body{
+margin:0;
+padding:15px;
+font-family:Arial;
+background:#eef2f7;
+}
+.box{
+background:white;
+padding:15px;
+margin:10px 0;
+border-radius:12px;
+cursor:pointer;
+box-shadow:0 3px 8px rgba(0,0,0,.1);
+}
+</style>
+</head>
+<body>
 
-            pro.innerHTML = `
-<iframe src="${url}" frameborder="0"></iframe>
+<h2>📚 Mes dossiers</h2>
 `;
 
-        } catch {
+        data.forEach(f => {
 
-            pro.innerHTML = `
-<iframe src="./app/all.html" frameborder="0"></iframe>
+            if (f.type == "dir") {
+
+                html += `
+<div class="box" onclick="ouvrirDossier('${f.name}')">
+📁 ${f.name}
+</div>
 `;
 
-        }
+            }
 
-    };
+        });
 
-    container.appendChild(recent);
+html += `
+
+<script>
+
+async function ouvrirDossier(nom){
+
+document.body.innerHTML = "<h3>Chargement...</h3>";
+
+const rep = await fetch(
+'https://api.github.com/repos/avelminou/webmaster/contents/app/pdf/' + nom
+);
+
+const files = await rep.json();
+
+let txt = "<h2>📁 " + nom + "</h2>";
+
+files.forEach(function(f){
+
+if(f.name.endsWith('.pdf')){
+
+txt +=
+'<div class="box" onclick="window.location.href=\\'https://docs.google.com/gview?embedded=1&url=' + f.download_url + '\\'">' +
+'📄 ' + f.name +
+'</div>';
+
+}
+
+});
+
+document.body.innerHTML = txt;
+
+}
+
+</script>
+
+</body>
+</html>
+`;
+
+        pro.innerHTML =
+        '<iframe style="width:100%;height:100%;border:0" srcdoc="' +
+        html.replace(/"/g, '&quot;') +
+        '"></iframe>';
+
+    } catch {
+
+        pro.innerHTML =
+        '<iframe src="./app/all.html" frameborder="0"></iframe>';
+
+    }
+
+};
+
+container.appendChild(recent);
+
 
 });
 
@@ -97,4 +178,4 @@ const chifre = document.querySelectorAll('.recent').length;
 
 nbL.innerText = chifre;
 
-rngColor.style.width = `${(220 * chifre) / 100}px`;
+rngColor.style.width = `${ (220 * chifre) / 100 } px`;
