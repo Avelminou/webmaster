@@ -71,62 +71,55 @@ rngColor.style.width = "0px";
 
 // ------------------ chargement dossiers PDF ------------------
 
+function log(msg) {
+
+    let box = document.createElement("div");
+
+    box.style.position = "fixed";
+    box.style.bottom = "0";
+    box.style.left = "0";
+    box.style.right = "0";
+    box.style.maxHeight = "150px";
+    box.style.overflow = "auto";
+    box.style.background = "black";
+    box.style.color = "lime";
+    box.style.fontSize = "12px";
+    box.style.zIndex = "99999";
+    box.style.padding = "5px";
+
+    box.innerText = typeof msg === "object"
+        ? JSON.stringify(msg, null, 2)
+        : msg;
+
+    document.body.appendChild(box);
+}
+
+
 async function chargerPDF() {
 
     container.innerHTML = "Chargement...";
 
     try {
 
-        const res = await fetch(
-            "https://api.github.com/repos/avelminou/webmaster/contents/app/pdf"
-        );
+        const url =
+        "https://api.github.com/repos/avelminou/webmaster/contents/app/pdf";
 
+        const res = await fetch(url);
         const data = await res.json();
 
-        container.innerHTML = "<h3>📚 Mes dossiers</h3>";
+        log(data); // 🔥 debug visible
 
-        data.forEach(f => {
+        container.innerHTML = "<h3>📚 Dossiers</h3>";
 
-            if (f.type === "dir") {
+        data.forEach(folder => {
 
-                const div = document.createElement("div");
+            if (folder.type === "dir") {
+
+                let div = document.createElement("div");
                 div.className = "box";
+                div.innerText = "📁 " + folder.name;
 
-                div.innerHTML = `📁 ${f.name}`;
-
-                div.onclick = async () => {
-
-                    container.innerHTML = "Chargement...";
-
-                    const rep = await fetch(
-                        "https://api.github.com/repos/avelminou/webmaster/contents/app/pdf/" + f.name
-                    );
-
-                    const files = await rep.json();
-
-                    container.innerHTML = `<h3>📁 ${f.name}</h3>`;
-
-                    files.forEach(file => {
-
-                        if (file.name.endsWith(".pdf")) {
-
-                            const d = document.createElement("div");
-                            d.className = "box";
-
-                            d.innerHTML = "📄 " + file.name;
-
-                            d.onclick = () => {
-                                window.location.href =
-                                "https://docs.google.com/gview?embedded=1&url=" +
-                                file.download_url;
-                            };
-
-                            container.appendChild(d);
-                        }
-
-                    });
-
-                };
+                div.onclick = () => openFolder(folder.name);
 
                 container.appendChild(div);
             }
@@ -135,9 +128,57 @@ async function chargerPDF() {
 
     } catch (e) {
 
-        container.innerHTML = "❌ Erreur de chargement";
+        log("ERROR API");
+        log(e);
+
+        container.innerHTML = "❌ Erreur chargement";
 
     }
+}
+
+async function openFolder(name) {
+
+    container.innerHTML = "Chargement...";
+
+    const url =
+    "https://api.github.com/repos/avelminou/webmaster/contents/app/pdf/" + name;
+
+    const res = await fetch(url);
+    const files = await res.json();
+
+    container.innerHTML = `<h3>📁 ${name}</h3>`;
+
+    files.forEach(file => {
+
+        let n = file.name.toLowerCase();
+
+        if (n.endsWith(".pdf") || n.endsWith(".docx")) {
+
+            let div = document.createElement("div");
+            div.className = "box";
+
+            div.innerText =
+                n.endsWith(".pdf") ? "📄 " : "📝 " + file.name;
+
+            div.onclick = () => openFile(file.download_url);
+
+            container.appendChild(div);
+        }
+
+    });
+}
+
+function openFile(url) {
+
+    let viewer =
+    "https://docs.google.com/gview?embedded=1&url=" + url;
+
+    pro.innerHTML = `
+        <iframe 
+        src="${viewer}" 
+        style="width:100%;height:100%;border:0">
+        </iframe>
+    `;
 }
 
 await chargerPDF();
