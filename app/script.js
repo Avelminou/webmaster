@@ -83,116 +83,61 @@ async function chargerPDF() {
 
         const data = await res.json();
 
-        let html = `
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-
-<style>
-
-body{
-margin:0;
-padding:15px;
-font-family:Arial;
-background:#eef2f7;
-}
-
-.box{
-background:white;
-padding:15px;
-margin:10px 0;
-border-radius:12px;
-cursor:pointer;
-box-shadow:0 3px 8px rgba(0,0,0,.1);
-}
-
-h2{
-color:#333;
-}
-
-</style>
-</head>
-<body>
-
-<h2>📚 Mes dossiers</h2>
-`;
-
-        let total = 0;
+        container.innerHTML = "<h3>📚 Mes dossiers</h3>";
 
         data.forEach(f => {
 
             if (f.type === "dir") {
 
-                total++;
+                const div = document.createElement("div");
+                div.className = "box";
 
-                html += `
-<div class="box" onclick="ouvrirDossier('${f.name}')">
-📁 ${f.name}
-</div>
-`;
+                div.innerHTML = `📁 ${f.name}`;
 
+                div.onclick = async () => {
+
+                    container.innerHTML = "Chargement...";
+
+                    const rep = await fetch(
+                        "https://api.github.com/repos/avelminou/webmaster/contents/app/pdf/" + f.name
+                    );
+
+                    const files = await rep.json();
+
+                    container.innerHTML = `<h3>📁 ${f.name}</h3>`;
+
+                    files.forEach(file => {
+
+                        if (file.name.endsWith(".pdf")) {
+
+                            const d = document.createElement("div");
+                            d.className = "box";
+
+                            d.innerHTML = "📄 " + file.name;
+
+                            d.onclick = () => {
+                                window.location.href =
+                                "https://docs.google.com/gview?embedded=1&url=" +
+                                file.download_url;
+                            };
+
+                            container.appendChild(d);
+                        }
+
+                    });
+
+                };
+
+                container.appendChild(div);
             }
 
         });
 
-        html += `
+    } catch (e) {
 
-<script>
-
-async function ouvrirDossier(nom){
-
-document.body.innerHTML = "<h3>Chargement...</h3>";
-
-const rep = await fetch(
-'https://api.github.com/repos/avelminou/webmaster/contents/app/pdf/' + nom
-);
-
-const files = await rep.json();
-
-let txt = '<h2>📁 ' + nom + '</h2>';
-
-files.forEach(function(f){
-
-if(f.name.endsWith('.pdf')){
-
-txt +=
-'<div class="box" onclick="window.location.href=\\\\' +
-'https://docs.google.com/gview?embedded=1&url=' +
-f.download_url +
-'\\\\'">' +
-'📄 ' + f.name +
-'</div>';
-
-}
-
-});
-
-document.body.innerHTML = txt;
-
-}
-
-</script>
-
-</body>
-</html>
-`;
-
-        container.innerHTML =
-            `<iframe style="width:100%;height:100%;border:0"
-        srcdoc="${html.replace(/"/g, "&quot;")}"></iframe>`;
-
-        nbL.innerText = total;
-        rngColor.style.width = `${total * 20}px`;
+        container.innerHTML = "❌ Erreur de chargement";
 
     }
-
-    catch {
-
-        container.innerHTML =
-            `<iframe src="./app/all.html" frameborder="0"></iframe>`;
-
-    }
-
 }
-chargerPDF();
+
+await chargerPDF();
