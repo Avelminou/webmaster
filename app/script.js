@@ -195,5 +195,4 @@ document.body.innerHTML = txt;
     }
 
 }
-
-await chargerPDF();
+chargerPDF();
