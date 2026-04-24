@@ -80,19 +80,21 @@ async function chargerPDF() {
 
     try {
 
-        const url =
-        "https://api.github.com/repos/avelminou/webmaster/contents/app/pdf";
+        const res = await fetch(
+        "https://api.github.com/repos/avelminou/webmaster/contents/app/pdf"
+        );
 
-        const res = await fetch(url);
         const data = await res.json();
 
-        log(data); // 🔥 debug visible
+        container.innerHTML = "<h3>📚 Cours récents</h3>";
 
-        container.innerHTML = "<h3>📚 Dossiers</h3>";
+        let count = 0;
 
         data.forEach(folder => {
 
             if (folder.type === "dir") {
+
+                count++;
 
                 let div = document.createElement("div");
                 div.className = "box";
@@ -105,12 +107,18 @@ async function chargerPDF() {
 
         });
 
+        if (count === 0) {
+            container.innerHTML += "<p>📭 Aucun cours disponible</p>";
+        }
+
+        nbL.innerText = count;
+        rngColor.style.width = `${count * 20}px`;
+
     } catch (e) {
 
-        log("ERROR API");
-        log(e);
-
         container.innerHTML = "❌ Erreur chargement";
+
+        console.log(e);
 
     }
 }
