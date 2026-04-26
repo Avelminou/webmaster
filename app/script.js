@@ -12,28 +12,21 @@ const bouton = [btnT, btnQ]
 
 
 bouton.forEach(function (coloBtn, i) {
-
     coloBtn.onclick = () => {
-
         btnU.style.background = 'white';
-
         const url = `https://avelminou.github.io/webmaster/app/outils/app${i}.html`;
 
-        fetch(url)
-            .then(() => {
-                pro.innerHTML = `
-            <iframe src="${url}" frameborder="0"></iframe>
-            `;
-            })
-            .catch(() => {
-                pro.innerHTML = `
-            <iframe src="./app/all.html" frameborder="0"></iframe>
-            `;
-            });
-
+        // Création du lien de téléchargement
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `app${i}.html`; // Nom du fichier lors du téléchargement
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
-
 });
+
+
 btnU.style.background = 'rgb(221, 225, 250)';
 btnU.onclick = () => {
     btnU.style.background = 'rgb(221, 225, 250)';
@@ -54,33 +47,26 @@ const lessons = [
 ];
 
 lessons.forEach((title, i) => {
-
     const recent = document.createElement("div");
     recent.className = "recent";
-
     recent.innerHTML = `
         <img src="./app/image/icons8-historique-100.png" width="30">
         <b>&nbsp;&nbsp;${title}</b>
-        `;
+    `;
 
-    recent.onclick = async () => {
+    recent.onclick = () => {
         const url = `https://avelminou.github.io/webmaster/app/off/lesson${i}.html`;
-
-        try {
-            const res = await fetch(url);
-            if (!res.ok) throw new Error();
-
-            pro.innerHTML = `<iframe src="${url}" frameborder="0"></iframe>`;
-        } catch (e) {
-            pro.innerHTML = `<p>Page introuvable 😢</p>`;
-        }
+        
+        const link = document.createElement('a');
+        link.href = url;
+        // On utilise le titre de la leçon pour nommer le fichier téléchargé
+        link.download = `${title.replace(/\s+/g, '_')}.html`; 
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
 
-
-
     container.appendChild(recent);
-
-
 });
 
 const chifre = document.querySelectorAll('.recent').length;
